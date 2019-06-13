@@ -6,4 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".JoystickActivity">
 
+   <!-- ActionBar actionBar = getActionBar();
+    actionBar.setDisplayHomeAsUpEnabled(true);-->
+
 </android.support.constraint.ConstraintLayout>

@@ -13,67 +13,77 @@ import java.text.AttributedCharacterIterator;
 
 public class JoyStickView extends SurfaceView {
 
-    private float centerX;
-    private float centerY;
+    public static float centerX;
+    public static float centerY;
+    public static float baseRadius;
+    public static float hatRadius;
 
     public JoyStickView(Context context) {
         super(context);
-        getHolder().addCallback(this);
     }
 
     public JoyStickView(Context context, AttributeSet attributes, int style) {
         super(context, attributes, style);
-        getHolder().addCallback(this);
     }
 
     public JoyStickView(Context context, AttributeSet attributes) {
         super(context, attributes);
-        getHolder().addCallback(this);
     }
 
+    // the function assign the variables their values
+    public void setupDimensions() {
+        centerX = getWidth() / 2; // the width of the surfaceview
+        centerY = getHeight() / 2; // the height of the surfaceview
+        // ensures that the joystick will always fit inside the surface view even if one dimension is greatly smaller than the other.
+        baseRadius = Math.min(getWidth(), getHeight()) / 3;
+        hatRadius = Math.min(getWidth(), getHeight()) / 5;
+    }
 
     //now we will implement the callbacks.
     // callback = a way that an object within a class can notify the class that a specific event has occurred within it
 
 
     //this method will be called when the SurfaceView has been fully created and has all the dimensions laid out and is ready for drawing.
-    @Override
-    public void surfaceCreated(SurfaceHolder holder)
-    {
+
+
+
+    //@Override
+    public void surfaceCreated(SurfaceHolder holder) {
         //set the callback methods in this class to be the ones to be called when those events happen.
-        setupDimensions();
+        setupDimensions(); // init the joystick position
         drawJoystick(centerX, centerY);
     }
 
-    @Override
+    //@Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
         //set the callback methods in this class to be the ones to be called when those events happen.
     }
 
-    @Override
+    //@Override
     public void surfaceDestroyed(SurfaceHolder holder) {
         //set the callback methods in this class to be the ones to be called when those events happen.
     }
 
 
-    private void drawJoystick(float newX , float newY){
+    // drawing the joystick on the screen
+    // params: newX, newY - used to specify the location of the hat (the yop of the joystick) on the SurfaceView
+    private void drawJoystick(float newX, float newY) {
 
-        if(getHolder().getSurface().isValid()){
+        // preventing the drawing from executing when the surfaceview has not been created on-screen , preventing exceptions at runtime
+        if (getHolder().getSurface().isValid()) {
+
             Canvas myCanvas = this.getHolder().lockCanvas(); // stuff to draw
             Paint colors = new Paint();
-            myCanvas.drawColor(Color.TRANSPARENT , PorterDuff.Mode.CLEAR); // Clearing the BG
-            colors.setARGB(25,50,50,50);// color of the joystick base
+            myCanvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR); // Clearing the BG
+            colors.setARGB(25, 50, 50, 50);// color of the joystick base
             myCanvas.drawCircle(centerX, centerY, baseRadius, colors); // draw the joystick base
-            colors.setARGB(255,0,0,255); // colo of the joystick itself
-            myCanvas.drawCircle(newX,newY, hatRadius, colors); // draw the joystick hat
+            colors.setARGB(255, 0, 0, 255); // colo of the joystick itself
+            myCanvas.drawCircle(newX, newY, hatRadius, colors); // draw the joystick hat
             getHolder().unlockCanvasAndPost(myCanvas); // write the new drawing to the SurfaceView
-
-
 
         }
 
     }
-
 
 
 }
