@@ -23,13 +23,62 @@ public class JoyStickView extends View {
 
     public float newX;
     public float newY;
+//
+//    private float sin;
+//    private float cos;
+//    private float hypotenuse;
+//
+//    private void updateSinCos(int newx, int newy) {
+//        //First determine the sin and cos of the angle that the touched point is at relative to the center of the joystick
+//        float hypotenuse = (float) Math.sqrt(Math.pow(newX - centerX, 2) + Math.pow(newY - centerY, 2));
+//        float sin = (newY - centerY) / hypotenuse; //sin = o/h
+//        float cos = (newX - centerX) / hypotenuse; //cos = a/h
+//    }
+
+    public void setNewPos(float newX, float newY) {
+        double distance = this.distance(newX, newY, this.centerX, this.centerY);
+        // if the point is inside the region of the joystick
+        if (distance <= this.baseRadius) {
+            this.newX = newX;
+            this.newY = newY;
+        } else {
+            float dx = newX - centerX;
+            float dy = newY - centerY;
+            float dR = (float) (distance - baseRadius);
+
+            // using משפטי תלס to calculate the lengths that are outside the joystick
+            float deltaX = (float) (dR * dx / distance);
+            float deltaY = (float) (dR * dy / distance);
+
+            this.newX = newX - deltaX;
+            this.newY = newY - deltaY;
+        }
+    }
+
 
     public void setNewX(float newX) {
-        this.newX = newX;
+//        if (this.distance(newX, this.))
+//            if (centerX - baseRadius < newX && newX < centerX + baseRadius)
+//                this.newX = newX;
+//            else {
+//                float cos = (newX - centerX) / (float) Math.sqrt(Math.pow(newX - centerX, 2) + Math.pow(newY - centerY, 2));
+//                this.newX = cos * baseRadius;
+//            }
+        this.newX=newX;
     }
 
     public void setNewY(float newY) {
-        this.newY = newY;
+//        if (centerY - baseRadius < newY && newY < centerY + baseRadius)
+//            this.newY = newY;
+//        else {
+//            float sin = (newY - centerY) / (float) Math.sqrt(Math.pow(newX - centerX, 2) + Math.pow(newY - centerY, 2));
+//            this.newY = sin * baseRadius;
+//        }
+        this.newY=newY;
+    }
+
+    public double distance(float x1, float y1, float x2, float y2) {
+        return Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
     }
 
     public float getCenterX() {
@@ -49,7 +98,7 @@ public class JoyStickView extends View {
         newY = centerY = (float) dm.heightPixels / 2; // the height
         // ensures that the joystick will always fit inside the surface view even if one dimension is greatly smaller than the other.
         baseRadius = (float) Math.min(dm.widthPixels, dm.heightPixels) / 3;
-        hatRadius = (float) Math.min(dm.widthPixels, dm.heightPixels) / 6;
+        hatRadius = (float) Math.min(dm.widthPixels, dm.heightPixels) / 7;
 
     }
 
@@ -77,6 +126,7 @@ public class JoyStickView extends View {
         myCanvas.drawCircle(centerX, centerY, baseRadius, colors); // draw the joystick base
         colors.setColor(Color.argb(255, 0, 0, 255));// colo of the joystick itself
         myCanvas.drawCircle(newX, newY, hatRadius, colors); // draw the joystick hat
+
 
     }
 }
