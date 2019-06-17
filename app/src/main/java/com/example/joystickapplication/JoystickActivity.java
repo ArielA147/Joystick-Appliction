@@ -7,13 +7,21 @@ import android.view.SurfaceView;
 import android.widget.Button;
 
 public class JoystickActivity extends AppCompatActivity {
-
+    private TcpClient client;
     private JoyStickView joyStickView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
 
+        super.onCreate(savedInstanceState);
+        // get client from login.
+        client = (TcpClient) getIntent().getSerializableExtra("Client");
+        try {
+            client.Connect();
+
+        } catch (Exception e) {
+            System.out.println(e.toString());
+        }
         this.joyStickView = new JoyStickView(this);
         setContentView(joyStickView);
     }
@@ -37,7 +45,7 @@ public class JoystickActivity extends AppCompatActivity {
                     return false;
                 else
 
-                break;
+                    break;
 
             case MotionEvent.ACTION_MOVE:
                 this.joyStickView.setNewX(event.getX());
