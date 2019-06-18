@@ -54,7 +54,7 @@ public class JoystickActivity extends AppCompatActivity {
 
             case MotionEvent.ACTION_MOVE:
                 if (this.isTouchingJoystick) {
-                    this.joyStickView.setNewPos(event.getX(), event.getY());
+                    this.joyStickView.setNewPos((int)event.getX(),(int)event.getY());
                 }
                 break;
 

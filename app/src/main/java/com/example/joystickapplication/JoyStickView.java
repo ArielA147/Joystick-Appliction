@@ -11,13 +11,13 @@ import android.view.View;
 
 public class JoyStickView extends View {
 
-    public float centerX;
-    public float centerY;
-    public float baseRadius;
-    public float hatRadius;
-    public float statusBarHeight;
-    public float newX;
-    public float newY;
+    public int centerX;
+    public int centerY;
+    public int baseRadius;
+    public int hatRadius;
+    public int statusBarHeight;
+    public int newX;
+    public int newY;
 
     public JoyStickView(Context context) {
         super(context);
@@ -25,31 +25,31 @@ public class JoyStickView extends View {
         DisplayMetrics dm = getResources().getDisplayMetrics();
 
         // ensures that the joystick will always fit inside the surface view even if one dimension is greatly smaller than the other.
-        baseRadius = (float) Math.min(dm.widthPixels, dm.heightPixels) / 3;
-        hatRadius = (float) Math.min(dm.widthPixels, dm.heightPixels) / 7;
-        statusBarHeight = getStatusbarHeight() * dm.density;
-        newX = centerX = (float) dm.widthPixels / 2; // the width
-        newY = centerY = (float) (dm.heightPixels + statusBarHeight) / 2; // the height
+        baseRadius = Math.min(dm.widthPixels, dm.heightPixels) / 3;
+        hatRadius = Math.min(dm.widthPixels, dm.heightPixels) / 7;
+        statusBarHeight = getStatusbarHeight() * (int) dm.density;
+        newX = centerX = (int) dm.widthPixels / 2; // the width
+        newY = centerY = (int) (dm.heightPixels + statusBarHeight) / 2; // the height
     }
 
-    public float getHatRadius() {
+    public int getHatRadius() {
         return hatRadius;
     }
 
-    public void setNewPos(float newX, float newY) {
+    public void setNewPos(int newX, int newY) {
         double distance = this.distance(newX, newY, this.centerX, this.centerY);
         // if the point is inside the region of the joystick
         if (distance <= this.baseRadius) {
             this.newX = newX;
             this.newY = newY;
         } else {
-            float dx = newX - centerX;
-            float dy = newY - centerY;
-            float dR = (float) (distance - baseRadius);
+            int dx = newX - centerX;
+            int dy = newY - centerY;
+            int dR = (int) (distance - baseRadius);
 
             // using Thales' theorem to calculate the lengths that are outside the joystick
-            float deltaX = (float) (dR * dx / distance);
-            float deltaY = (float) (dR * dy / distance);
+            int deltaX = (int) (dR * dx / distance);
+            int deltaY = (int) (dR * dy / distance);
 
             this.newX = newX - deltaX;
             this.newY = newY - deltaY;
@@ -60,11 +60,11 @@ public class JoyStickView extends View {
         return Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
     }
 
-    public float getCenterX() {
+    public int getCenterX() {
         return centerX;
     }
 
-    public float getCenterY() {
+    public int getCenterY() {
         return centerY;
     }
 
@@ -87,9 +87,8 @@ public class JoyStickView extends View {
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
 
-        this.newX = this.centerX = (float) w / 2;
-        this.newY = this.centerY = (float) (h + this.statusBarHeight) / 2;
-
+        this.newX = this.centerX = w / 2;
+        this.newY = this.centerY = (h + this.statusBarHeight) / 2;
 
 
     }
