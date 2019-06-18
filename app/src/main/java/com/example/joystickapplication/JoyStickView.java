@@ -21,6 +21,8 @@ public class JoyStickView extends View {
         return hatRadius;
     }
 
+    public float statusBarHeight;
+
     public float newX;
     public float newY;
 //
@@ -99,7 +101,7 @@ public class JoyStickView extends View {
         // ensures that the joystick will always fit inside the surface view even if one dimension is greatly smaller than the other.
         baseRadius = (float) Math.min(dm.widthPixels, dm.heightPixels) / 3;
         hatRadius = (float) Math.min(dm.widthPixels, dm.heightPixels) / 7;
-
+        statusBarHeight = getStatusbarHeight() * dm.density;
     }
 
     private int getStatusbarHeight() {
@@ -128,9 +130,9 @@ public class JoyStickView extends View {
         // todo : NICE TO HAVE : to move the coloring to constant params
 
         colors.setColor(Color.argb(250, 50, 50, 50));// color of the joystick base
-        myCanvas.drawCircle(centerX, centerY - getStatusbarHeight(), baseRadius, colors); // draw the joystick base
+        myCanvas.drawCircle(centerX, centerY - this.statusBarHeight, baseRadius, colors); // draw the joystick base
         colors.setColor(Color.argb(255, 0, 0, 255));// colo of the joystick itself
-        myCanvas.drawCircle(newX, newY - getStatusbarHeight(), hatRadius, colors); // draw the joystick hat
+        myCanvas.drawCircle(newX, newY - this.statusBarHeight, hatRadius, colors); // draw the joystick hat
 
 
     }
