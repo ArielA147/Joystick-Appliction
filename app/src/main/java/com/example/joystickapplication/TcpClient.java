@@ -46,7 +46,12 @@ public class TcpClient implements Serializable {
 
     }
 
-    public void SendMessege(final String msg) {
+    /**
+     * the function sending message to the server
+     *
+     * @param msg the text to the server
+     */
+    public void sendMessage(final String msg) {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
@@ -60,7 +65,7 @@ public class TcpClient implements Serializable {
         thread.start();
     }
 
-    public void CloseClient() {
+    public void closeClient() {
         isConnected = false;
         if (writer != null) {
             writer.flush();

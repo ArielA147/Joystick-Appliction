@@ -11,53 +11,40 @@ import android.view.View;
 
 public class JoyStickView extends View {
 
-    public int centerX;
-    public int centerY;
-    public int baseRadius;
-    public int hatRadius;
-    public int statusBarHeight;
-    public int newX;
-    public int newY;
+    private int centerX;
+    private int centerY;
+    private int baseRadius;
+    private int hatRadius;
+    private int statusBarHeight;
+    private int newX;
+    private int newY;
+
+    // colors of the base and the hat joystick circles
+    private static final int joystickBaseColor = Color.argb(250, 50, 50, 50);
+    private static final int joystickColor = Color.argb(255, 0, 0, 255);
 
     public JoyStickView(Context context) {
         super(context);
 
         DisplayMetrics dm = getResources().getDisplayMetrics();
 
-        // ensures that the joystick will always fit inside the surface view even if one dimension is greatly smaller than the other.
+        // ensures that the joystick will always fit inside the surface view even if one
+        // dimension is greatly smaller than the other.
         baseRadius = Math.min(dm.widthPixels, dm.heightPixels) / 3;
         hatRadius = Math.min(dm.widthPixels, dm.heightPixels) / 7;
-        statusBarHeight = getStatusbarHeight() * (int) dm.density;
-        newX = centerX = (int) dm.widthPixels / 2; // the width
-        newY = centerY = (int) (dm.heightPixels + statusBarHeight) / 2; // the height
+        statusBarHeight = getStatusBarHeight() * (int) dm.density;
+        newX = centerX = dm.widthPixels / 2;
+        newY = centerY = (dm.heightPixels + statusBarHeight) / 2;
     }
+
+    // Set and Get
 
     public int getHatRadius() {
         return hatRadius;
     }
 
-    public void setNewPos(int newX, int newY) {
-        double distance = this.distance(newX, newY, this.centerX, this.centerY);
-        // if the point is inside the region of the joystick
-        if (distance <= this.baseRadius) {
-            this.newX = newX;
-            this.newY = newY;
-        } else {
-            int dx = newX - centerX;
-            int dy = newY - centerY;
-            int dR = (int) (distance - baseRadius);
-
-            // using Thales' theorem to calculate the lengths that are outside the joystick
-            int deltaX = (int) (dR * dx / distance);
-            int deltaY = (int) (dR * dy / distance);
-
-            this.newX = newX - deltaX;
-            this.newY = newY - deltaY;
-        }
-    }
-
-    public double distance(float x1, float y1, float x2, float y2) {
-        return Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
+    public int getBaseRadius() {
+        return baseRadius;
     }
 
     public int getCenterX() {
@@ -68,13 +55,53 @@ public class JoyStickView extends View {
         return centerY;
     }
 
-    private int getStatusbarHeight() {
+    /**
+     * @return height of the bar of the application
+     */
+    private int getStatusBarHeight() {
         int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
 
         if (resourceId > 0)
             return getResources().getDimensionPixelSize(resourceId);
         return 0;
 
+    }
+
+    public double distance(float x1, float y1, float x2, float y2) {
+        return Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
+    }
+
+    /**
+     * the function drawing the joystick hat on the canvas according to its position
+     *
+     * @param myCanvas canvas object
+     * @param newX     the new X position of the joystick hat
+     * @param newY     the new Y position of the joystick hat
+     */
+    private void drawJoystick(Canvas myCanvas, float newX, float newY) {
+        Paint colors = new Paint();
+        myCanvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR); // Clearing the BG
+
+        // draw the joystick base
+        colors.setColor(joystickBaseColor);
+        myCanvas.drawCircle(centerX, centerY - this.statusBarHeight, baseRadius, colors);
+
+        // draw the joystick hat
+        colors.setColor(joystickColor);
+        myCanvas.drawCircle(newX, newY - this.statusBarHeight, hatRadius, colors);
+    }
+
+    public void setNewX(int newX) {
+        this.newX = newX;
+    }
+
+    public void setNewY(int newY) {
+        this.newY = newY;
+    }
+
+    public void setNewPos(double angle) {
+        this.newX = centerX + (int) ((baseRadius - hatRadius) * Math.cos(Math.toRadians(angle)));
+        this.newY = centerY + (int) ((baseRadius - hatRadius) * Math.sin(Math.toRadians(angle)));
     }
 
     @Override
@@ -85,26 +112,9 @@ public class JoyStickView extends View {
 
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-        super.onSizeChanged(w, h, oldw, oldh);
-
         this.newX = this.centerX = w / 2;
         this.newY = this.centerY = (h + this.statusBarHeight) / 2;
-
-
+        super.onSizeChanged(w, h, oldw, oldh);
     }
 
-    // drawing the joystick on the screen
-    private void drawJoystick(Canvas myCanvas, float newX, float newY) {
-        Paint colors = new Paint();
-        myCanvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR); // Clearing the BG
-
-        // todo : NICE TO HAVE : to move the coloring to constant params
-
-        colors.setColor(Color.argb(250, 50, 50, 50));// color of the joystick base
-        myCanvas.drawCircle(centerX, centerY - this.statusBarHeight, baseRadius, colors); // draw the joystick base
-        colors.setColor(Color.argb(255, 0, 0, 255));// colo of the joystick itself
-        myCanvas.drawCircle(newX, newY - this.statusBarHeight, hatRadius, colors); // draw the joystick hat
-
-
-    }
 }
