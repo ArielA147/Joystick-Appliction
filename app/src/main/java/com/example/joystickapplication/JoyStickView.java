@@ -46,7 +46,7 @@ public class JoyStickView extends View {
             float dy = newY - centerY;
             float dR = (float) (distance - baseRadius);
 
-            // using משפטי תלס to calculate the lengths that are outside the joystick
+            // using Thales' theorem to calculate the lengths that are outside the joystick
             float deltaX = (float) (dR * dx / distance);
             float deltaY = (float) (dR * dy / distance);
 
@@ -64,7 +64,7 @@ public class JoyStickView extends View {
 //                float cos = (newX - centerX) / (float) Math.sqrt(Math.pow(newX - centerX, 2) + Math.pow(newY - centerY, 2));
 //                this.newX = cos * baseRadius;
 //            }
-        this.newX=newX;
+        this.newX = newX;
     }
 
     public void setNewY(float newY) {
@@ -74,7 +74,7 @@ public class JoyStickView extends View {
 //            float sin = (newY - centerY) / (float) Math.sqrt(Math.pow(newX - centerX, 2) + Math.pow(newY - centerY, 2));
 //            this.newY = sin * baseRadius;
 //        }
-        this.newY=newY;
+        this.newY = newY;
     }
 
     public double distance(float x1, float y1, float x2, float y2) {
@@ -102,8 +102,14 @@ public class JoyStickView extends View {
 
     }
 
+    private int getStatusbarHeight() {
+        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
 
-    // todo : create view when flipping the screen
+        if (resourceId > 0)
+            return getResources().getDimensionPixelSize(resourceId);
+        return 0;
+
+    }
 
     @Override
     protected void onDraw(Canvas canvas) {
@@ -113,7 +119,6 @@ public class JoyStickView extends View {
 
 
     //todo : NICE TO HAVE : to change color ASAP !
-    // todo : MUST : to fix the position of the big and small circles on the screen !!!
 
     // drawing the joystick on the screen
     private void drawJoystick(Canvas myCanvas, float newX, float newY) {
@@ -123,9 +128,9 @@ public class JoyStickView extends View {
         // todo : NICE TO HAVE : to move the coloring to constant params
 
         colors.setColor(Color.argb(250, 50, 50, 50));// color of the joystick base
-        myCanvas.drawCircle(centerX, centerY, baseRadius, colors); // draw the joystick base
+        myCanvas.drawCircle(centerX, centerY-getStatusbarHeight(), baseRadius, colors); // draw the joystick base
         colors.setColor(Color.argb(255, 0, 0, 255));// colo of the joystick itself
-        myCanvas.drawCircle(newX, newY, hatRadius, colors); // draw the joystick hat
+        myCanvas.drawCircle(newX, newY-getStatusbarHeight(), hatRadius, colors); // draw the joystick hat
 
 
     }
