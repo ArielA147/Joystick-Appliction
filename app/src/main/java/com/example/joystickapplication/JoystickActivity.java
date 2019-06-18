@@ -38,8 +38,8 @@ public class JoystickActivity extends AppCompatActivity {
                 // the current gesture has been aborted
             case MotionEvent.ACTION_CANCEL:
 
-                this.joyStickView.setNewPos(joyStickView.getCenterX(),joyStickView.getCenterY());
-                this.isTouchingJoystick=false;
+                this.joyStickView.setNewPos(joyStickView.getCenterX(), joyStickView.getCenterY());
+                this.isTouchingJoystick = false;
                 break;
 
             case MotionEvent.ACTION_DOWN:
@@ -53,8 +53,6 @@ public class JoystickActivity extends AppCompatActivity {
                 break;
 
             case MotionEvent.ACTION_MOVE:
-//                this.joyStickView.setNewX(event.getX());
-//                this.joyStickView.setNewY(event.getY());
                 if (this.isTouchingJoystick) {
                     this.joyStickView.setNewPos(event.getX(), event.getY());
                 }

@@ -13,29 +13,28 @@ public class JoyStickView extends View {
 
     public float centerX;
     public float centerY;
-
     public float baseRadius;
     public float hatRadius;
+    public float statusBarHeight;
+    public float newX;
+    public float newY;
+
+    public JoyStickView(Context context) {
+        super(context);
+
+        DisplayMetrics dm = getResources().getDisplayMetrics();
+
+        // ensures that the joystick will always fit inside the surface view even if one dimension is greatly smaller than the other.
+        baseRadius = (float) Math.min(dm.widthPixels, dm.heightPixels) / 3;
+        hatRadius = (float) Math.min(dm.widthPixels, dm.heightPixels) / 7;
+        statusBarHeight = getStatusbarHeight() * dm.density;
+        newX = centerX = (float) dm.widthPixels / 2; // the width
+        newY = centerY = (float) (dm.heightPixels + statusBarHeight) / 2; // the height
+    }
 
     public float getHatRadius() {
         return hatRadius;
     }
-
-    public float statusBarHeight;
-
-    public float newX;
-    public float newY;
-//
-//    private float sin;
-//    private float cos;
-//    private float hypotenuse;
-//
-//    private void updateSinCos(int newx, int newy) {
-//        //First determine the sin and cos of the angle that the touched point is at relative to the center of the joystick
-//        float hypotenuse = (float) Math.sqrt(Math.pow(newX - centerX, 2) + Math.pow(newY - centerY, 2));
-//        float sin = (newY - centerY) / hypotenuse; //sin = o/h
-//        float cos = (newX - centerX) / hypotenuse; //cos = a/h
-//    }
 
     public void setNewPos(float newX, float newY) {
         double distance = this.distance(newX, newY, this.centerX, this.centerY);
@@ -57,28 +56,6 @@ public class JoyStickView extends View {
         }
     }
 
-
-    public void setNewX(float newX) {
-//        if (this.distance(newX, this.))
-//            if (centerX - baseRadius < newX && newX < centerX + baseRadius)
-//                this.newX = newX;
-//            else {
-//                float cos = (newX - centerX) / (float) Math.sqrt(Math.pow(newX - centerX, 2) + Math.pow(newY - centerY, 2));
-//                this.newX = cos * baseRadius;
-//            }
-        this.newX = newX;
-    }
-
-    public void setNewY(float newY) {
-//        if (centerY - baseRadius < newY && newY < centerY + baseRadius)
-//            this.newY = newY;
-//        else {
-//            float sin = (newY - centerY) / (float) Math.sqrt(Math.pow(newX - centerX, 2) + Math.pow(newY - centerY, 2));
-//            this.newY = sin * baseRadius;
-//        }
-        this.newY = newY;
-    }
-
     public double distance(float x1, float y1, float x2, float y2) {
         return Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
     }
@@ -89,19 +66,6 @@ public class JoyStickView extends View {
 
     public float getCenterY() {
         return centerY;
-    }
-
-    public JoyStickView(Context context) {
-        super(context);
-
-        DisplayMetrics dm = getResources().getDisplayMetrics();
-
-        newX = centerX = (float) dm.widthPixels / 2; // the width
-        newY = centerY = (float) dm.heightPixels / 2; // the height
-        // ensures that the joystick will always fit inside the surface view even if one dimension is greatly smaller than the other.
-        baseRadius = (float) Math.min(dm.widthPixels, dm.heightPixels) / 3;
-        hatRadius = (float) Math.min(dm.widthPixels, dm.heightPixels) / 7;
-        statusBarHeight = getStatusbarHeight() * dm.density;
     }
 
     private int getStatusbarHeight() {
@@ -119,8 +83,16 @@ public class JoyStickView extends View {
         drawJoystick(canvas, this.newX, this.newY);
     }
 
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
 
-    //todo : NICE TO HAVE : to change color ASAP !
+        this.newX = this.centerX = (float) w / 2;
+        this.newY = this.centerY = (float) (h + this.statusBarHeight) / 2;
+
+
+
+    }
 
     // drawing the joystick on the screen
     private void drawJoystick(Canvas myCanvas, float newX, float newY) {
