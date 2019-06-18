@@ -128,9 +128,9 @@ public class JoyStickView extends View {
         // todo : NICE TO HAVE : to move the coloring to constant params
 
         colors.setColor(Color.argb(250, 50, 50, 50));// color of the joystick base
-        myCanvas.drawCircle(centerX, centerY-getStatusbarHeight(), baseRadius, colors); // draw the joystick base
+        myCanvas.drawCircle(centerX, centerY - getStatusbarHeight(), baseRadius, colors); // draw the joystick base
         colors.setColor(Color.argb(255, 0, 0, 255));// colo of the joystick itself
-        myCanvas.drawCircle(newX, newY-getStatusbarHeight(), hatRadius, colors); // draw the joystick hat
+        myCanvas.drawCircle(newX, newY - getStatusbarHeight(), hatRadius, colors); // draw the joystick hat
 
 
     }
