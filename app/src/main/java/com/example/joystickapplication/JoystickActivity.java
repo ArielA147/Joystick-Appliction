@@ -8,6 +8,9 @@ public class JoystickActivity extends AppCompatActivity {
     private TcpClient client;
     private JoyStickView joyStickView;
     private boolean isTouchingJoystick = false;
+    private String alironPath = "set /controls/flight/aileron ";
+    private String elevatorPath = "set /controls/flight/elevator ";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,21 +59,28 @@ public class JoystickActivity extends AppCompatActivity {
                 if (this.isTouchingJoystick) {
                     double angle = angle(xTouch - centerX, yTouch - centerY);
                     double distance = this.joyStickView.distance(xTouch, yTouch, centerX, centerY);
-                    double magnitude = distance / (this.joyStickView.getBaseRadius()-this.joyStickView.getHatRadius());
+                    double magnitude = distance / (this.joyStickView.getBaseRadius() - this.joyStickView.getHatRadius());
 
                     // if out of base circle
                     if (magnitude >= 1) {
                         magnitude = 1;
                         this.joyStickView.setNewPos(angle);
                     } else {
-                        this.joyStickView.setNewX((int)(xTouch));
-                        this.joyStickView.setNewY((int)(yTouch));
+                        this.joyStickView.setNewX((int) (xTouch));
+                        this.joyStickView.setNewY((int) (yTouch));
                     }
 
                     // normalize the x,y points
-                    float xNorm = (float)(magnitude * Math.cos(Math.toRadians(angle)));
-                    float yNorm = (float)(magnitude * Math.sin(Math.toRadians(angle))) * (-1);
-                    client.sendMessage("this x : " + String.valueOf(xNorm) + " this y : " + String.valueOf(yNorm));
+                    float xNorm = (float) (magnitude * Math.cos(Math.toRadians(angle)));
+                    float yNorm = (float) (magnitude * Math.sin(Math.toRadians(angle))) * (-1);
+
+                    String alironValueMsg = alironPath + xNorm + "\r\n";
+                    String elevatorValueMsg = elevatorPath + yNorm + "\r\n";
+
+                    client.sendMessage(alironValueMsg);
+                    client.sendMessage(elevatorValueMsg);
+
+//                    client.sendMessage("this x : " + String.valueOf(xNorm) + " this y : " + String.valueOf(yNorm));
                 }
                 break;
         }
