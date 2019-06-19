@@ -89,6 +89,12 @@ public class JoystickActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    protected void onDestroy() {
+        client.closeClient();
+        super.onDestroy();
+    }
+
     public double angle(float dx, float dy) {
         if (dx >= 0 && dy >= 0) return Math.toDegrees(Math.atan(dy / dx));
         else if (dx < 0 && dy >= 0) return Math.toDegrees(Math.atan(dy / dx)) + 180;
